@@ -21,7 +21,7 @@ git add -A && git commit -a -m "$CURRENT_TIME"
 
 # Push to GitHub using SSH
 echo "Pushing to Github..."
-git push origin master -v
+git push origin main -v
 
 ######## Start Minecraft Bedrock Server ########
 echo "Starting Server..."
