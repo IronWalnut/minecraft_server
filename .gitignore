@@ -1,0 +1,17 @@
+# Ignore server binaries
+bedrock_server
+bedrock_server_symbols.debug
+
+# Ignore generated files
+valid_known_packs.json
+Dedicated_Server.txt
+
+# Ignore server folders
+behavior_packs/*
+config/*
+definitions/*
+resource_packs/*
+structures/*
+
+# Ignore logs
+server_console.log
