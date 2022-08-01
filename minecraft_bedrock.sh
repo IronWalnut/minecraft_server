@@ -18,13 +18,14 @@ echo "DONE!"
 # Create commit on all files with timestamp as message
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing Changes..."
-git add -A && git status && git commit -a -m "Auto-commit $CURRENT_TIME"
+git add -A && git commit -a -m "Auto-commit $CURRENT_TIME"
 echo "DONE!"
 
-# Push to GitHub using SSH
+# Push to GitHub using SSH, track upload times
 echo "Pushing to Github..."
-git push origin main -v
-echo "DONE!"
+SECONDS=0
+git push origin main -v 2>&1
+echo "DONE! - Took $(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds"
 
 ######## Start Minecraft Bedrock Server ########
 echo "Starting Server..."
