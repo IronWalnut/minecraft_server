@@ -18,7 +18,7 @@ echo "DONE!"
 # Create commit on all files with timestamp as message
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing Changes..."
-git add -A && git commit -a -m "$CURRENT_TIME"
+git add -A && git status && git commit -a -m "Auto-commit $CURRENT_TIME"
 echo "DONE!"
 
 # Push to GitHub using SSH
