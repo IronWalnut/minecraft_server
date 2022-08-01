@@ -13,6 +13,7 @@ cd $BEDROCK_SERVER_DIR
 echo "Waiting 60 seconds for network..."
 sleep 60
 echo "DONE!"
+echo
 
 ######## Run Server GitHub Backup ########
 # Create commit on all files with timestamp as message
@@ -20,12 +21,14 @@ CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing Changes..."
 git add -A && git commit -a -m "Auto-commit $CURRENT_TIME"
 echo "DONE!"
+echo
 
 # Push to GitHub using SSH and capturing stderr, track upload times
 echo "Pushing to Github..."
 SECONDS=0
 git push origin main -v 2>&1
 echo "DONE! - Took $(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds"
+echo
 
 ######## Start Minecraft Bedrock Server ########
 echo "Starting Server..."
