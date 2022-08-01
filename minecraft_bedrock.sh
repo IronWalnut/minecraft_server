@@ -21,7 +21,7 @@ echo "Committing Changes..."
 git add -A && git commit -a -m "Auto-commit $CURRENT_TIME"
 echo "DONE!"
 
-# Push to GitHub using SSH, track upload times
+# Push to GitHub using SSH capturing stderr, track upload times
 echo "Pushing to Github..."
 SECONDS=0
 git push origin main -v 2>&1
