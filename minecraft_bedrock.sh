@@ -24,7 +24,6 @@ echo "DONE!"
 echo
 
 # Push to GitHub using SSH and capturing stderr, track upload times
-echo "Pushing to Github..."
 SECONDS=0
 git push origin main -v 2>&1
 echo "DONE! - Took $(($SECONDS / 60)) minutes and $(($SECONDS % 60)) seconds"
