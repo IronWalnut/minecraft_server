@@ -4,7 +4,7 @@
 **Port:** 19132 (default)
 
 # Server Maintenance & Backups
-The server will reboot for maintenance and to back up the world files on Mondays, Wednesdays, and Fridays at 4am EST. Being logged in during this time will result in being kicked from the server and could be a bad idea, although I've never tested this.
+The server will reboot for maintenance and to back up the world files on Mondays, Wednesdays, and Fridays at 4am EST. Being logged in during this time will result in being kicked from the server until maintenance is complete. Backups take around \~25 minutes to run and are typically finished by 4:30am EST.
 
 
 # Installation Notes
