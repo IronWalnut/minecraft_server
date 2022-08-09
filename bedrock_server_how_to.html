@@ -303,7 +303,15 @@
                 <td>If true, the client position will get corrected to the server position if the movement score exceeds the threshold.
                     Only relevant for server-authoritative-movement.
                     We don't recommend enabling this as of yet; work is still in progress.</td>
-            </tr>           
+            </tr>
+            <tr>
+                <td>disable-player-interaction</td>
+                <td>true, false</td>
+                <td>false</td>
+                <td>Always</td>
+                <td>If true, the server will inform clients that they should ignore other players when interacting with the world.
+		    This is not server authoritative.</td>
+            </tr>      
         </tbody>
     </table>
 
