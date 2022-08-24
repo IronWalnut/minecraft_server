@@ -12,8 +12,8 @@ LD_LIBRARY_PATH="$BEDROCK_SERVER_DIR"
 cd $BEDROCK_SERVER_DIR
 
 # Wait for networking stuff to come online after reboot
-echo "Waiting 60 seconds for network..."
-sleep 60
+echo "Waiting 30 seconds for network..."
+sleep 30
 echo "DONE!"
 echo
 
