@@ -1,27 +1,32 @@
 [
   {
-	"name": "Fighting Walnut",
-	"permission": "operator",
-	"xuid": "2533274803008344"
+		"name": "Fighting Walnut",
+		"permission": "operator",
+		"xuid": "2533274803008344"
   },
   {
-	"name": "crazygirl9991",
-	"permission": "member",
-	"xuid": "2535407689134513"
+		"name": "crazygirl9991",
+		"permission": "member",
+		"xuid": "2535407689134513"
   },
   {
-	"name": "Browns Backer95",
-	"permission": "member",
-	"xuid": "2535443258684408"
+		"name": "Browns Backer95",
+		"permission": "member",
+		"xuid": "2535443258684408"
   },
   {
-	"name": "MagickMoxie",
-	"permission": "member",
-	"xuid": "2535425211706315"
+		"name": "MagickMoxie",
+		"permission": "member",
+		"xuid": "2535425211706315"
   },
   {
-	"name": "II Disavowed II",
-	"permission": "member",
-	"xuid": "2533274819843841"
+		"name": "II Disavowed II",
+		"permission": "member",
+		"xuid": "2533274819843841"
+  },
+  {
+    "name": "ChipmunkGirly",
+    "permission": "member",
+    "xuid": "2535464817825631"
   }
 ]
