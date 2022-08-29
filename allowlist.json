@@ -1,1 +1,32 @@
-[{"ignoresPlayerLimit":true,"name":"Fighting Walnut"},{"ignoresPlayerLimit":false,"name":"crazygirl9991","xuid":"2535407689134513"},{"ignoresPlayerLimit":false,"name":"Browns Backer95"},{"ignoresPlayerLimit":false,"name":"MagickMoxie"},{"ignoresPlayerLimit":false,"name":"II Disavowed II"}]
+[
+   {
+      "name":"Fighting Walnut",
+      "ignoresPlayerLimit":true,
+      "xuid":"2533274803008344"
+   },
+   {
+      "name":"crazygirl9991",
+      "ignoresPlayerLimit":false,
+      "xuid":"2535407689134513"
+   },
+   {
+      "name":"Browns Backer95",
+      "ignoresPlayerLimit":false,
+      "xuid":"2535443258684408"
+   },
+   {
+      "name":"MagickMoxie",
+      "ignoresPlayerLimit":false,
+      "xuid":"2535425211706315"
+   },
+   {
+      "name":"II Disavowed II",
+      "ignoresPlayerLimit":false,
+      "xuid":"2533274819843841"
+   },
+   {
+      "name":"Tman1205",
+      "ignoresPlayerLimit":false,
+      "xuid":"2533274853663264"
+   }
+]
