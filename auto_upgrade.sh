@@ -73,11 +73,20 @@ echo "DONE!"
 echo
 
 # Move back to BEDROCK_SERVER_DIR & delete ALL untracked files to remove old version
+echo "Deleting untracked files from repo..."
 cd $BEDROCK_SERVER_DIR
 git clean -dfx
+echo "DONE!"
+echo
 
 # Copy newly extracted files into repo
+echo "Copying extracted files to repo..."
 cp -a "$EXTRACTED_DIR/." "$BEDROCK_SERVER_DIR"
+echo "DONE!"
+echo
 
 # Remove temp dir
+echo "Removing temp dir..."
 rm -R "$AUTO_UPGRADE_TEMP_DIR"
+echo "DONE!"
+echo
