@@ -77,7 +77,7 @@ cd $BEDROCK_SERVER_DIR
 git clean -dfx
 
 # Copy newly extracted files into repo
-cp -a "$EXTRACTED_DIR/." "$"
+cp -a "$EXTRACTED_DIR/." "$BEDROCK_SERVER_DIR"
 
 # Remove temp dir
 rm -R "$AUTO_UPGRADE_TEMP_DIR"
