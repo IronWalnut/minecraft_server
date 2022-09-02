@@ -81,4 +81,3 @@ cp -a "$EXTRACTED_DIR/." "$"
 
 # Remove temp dir
 rm -R "$AUTO_UPGRADE_TEMP_DIR"
-
