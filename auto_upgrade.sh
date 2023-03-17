@@ -44,7 +44,7 @@ cd $BEDROCK_SERVER_DIR
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing changes..."
 # Create commit on all files with timestamp as message
-git add -A && git commit -a -m "Auto-upgrade commit $CURRENT_TIME"
+git add -A && git commit -a -m "Auto-upgrade $ZIP_FILE_NAME - $CURRENT_TIME"
 echo "DONE!"
 echo
 
