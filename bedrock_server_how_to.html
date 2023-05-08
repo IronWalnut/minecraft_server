@@ -32,7 +32,7 @@
         border: 1px solid #000;
         padding: 5px;
     }
-
+    
     </style>
 </head>
 
@@ -52,7 +52,7 @@
 
     <h3>Linux</h3>
     <p>
-        The Linux version of the Bedrock Server requires Ubuntu 18 or later. Other distributions are not supported.
+        The Linux version of the Bedrock Server requires Ubuntu 18 or later. Other distributions are not supported. 
         Unzip the container file into an empty folder. Start the server with the following command:
     </p>
     <blockquote>
@@ -70,7 +70,7 @@
     </p>
     <p>
         On some systems, when you wish to connect to the server using a client running on the same machine as the
-        server is running on, you will need to exempt the Minecraft client from UWP loopback restrictions:
+        server is running on, you will need to exempt the Minecraft client from UWP loopback restrictions: 
         <blockquote>CheckNetIsolation.exe LoopbackExempt –a –p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436</blockquote>.
     </p>
 
@@ -93,15 +93,8 @@
         </thead>
         <tbody>
             <tr>
-                <td>server-name</td>
-                <td>Any string (no semicolon allowed)</td>
-                <td>Dedicated Server</td>
-                <td>Always</td>
-                <td>This is the server name shown in the in-game server list.</td>
-            </tr>
-            <tr>
                 <td>gamemode</td>
-                <td>survival, creative, adventure</td>
+                <td>survival (0), creative (1), adventure (2)</td>
                 <td>survival</td>
                 <td>Always or only for new players</td>
                 <td></td>
@@ -113,7 +106,7 @@
                 <td>Always</td>
                 <td>
                     <b>force-gamemode=false</b>(or <b>force-gamemode is not defined</b> in the server.properties file)
-                    prevents the server from sending to the client gamemode values other
+                    prevents the server for sending to the client gamemode values other
                     than the gamemode value saved by the server during world creation
                     even if those values are set in server.properties file after world creation.<br />
                     <b>force-gamemode=true</b> forces the server to send to the client gamemode values
@@ -123,17 +116,24 @@
             </tr>
             <tr>
                 <td>difficulty</td>
-                <td>peaceful, easy, normal, hard</td>
+                <td>peaceful (0), easy (1), normal (2), hard (3)</td>
                 <td>easy</td>
                 <td>Always</td>
                 <td></td>
             </tr>
-			<tr>
-                <td>allow-cheats</td>
-                <td>true, false</td>
-                <td>false</td>
+            <tr>
+                <td>level-type</td>
+                <td>FLAT, LEGACY, DEFAULT</td>
+                <td>DEFAULT</td>
+                <td>World creation</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>server-name</td>
+                <td>Any string</td>
+                <td>Dedicated Server</td>
                 <td>Always</td>
-                <td>If true then cheats like commands can be used.</td>
+                <td>This is the server name shown in the in-game server list.</td>
             </tr>
             <tr>
                 <td>max-players</td>
@@ -144,31 +144,22 @@
             </tr>
             <tr>
                 <td>server-port</td>
-                <td>Integer between 1024 and 65535</td>
+                <td>Any integer</td>
                 <td>19132</td>
                 <td>Always</td>
-                <td>Values below 1024 may be used, but are generally reserved for well known applications</td>
+                <td></td>
             </tr>
             <tr>
                 <td>server-portv6</td>
-                <td>Integer between 1024 and 65535</td>
+                <td>Any integer</td>
                 <td>19133</td>
                 <td>Always</td>
-                <td>Values below 1024 may be used, but are generally reserved for well known applications</td>
-            </tr>
-            <tr>
-                <td>enable-lan-visibility</td>
-                <td>true, false</td>
-                <td>true</td>
-                <td>Always</td>
-                <td>Listen and respond to clients that are looking for servers on the LAN. This will cause the server to bind to
-					the default ports (19132, 19133) even when 'server-port' and 'server-portv6' have non-default values. Consider
-					turning this off if LAN discovery is not desirable, or when running multiple servers on the same host may lead to port conflicts.</td>
+                <td></td>
             </tr>
             <tr>
                 <td>level-name</td>
                 <td>Any string</td>
-                <td>Bedrock level</td>
+                <td>level</td>
                 <td>Always</td>
                 <td>The name of level to be used/generated. Each level has its own folder in <code>/worlds</code>.</td>
             </tr>
@@ -184,9 +175,9 @@
                 <td>true, false</td>
                 <td>true</td>
                 <td>Always</td>
-                <td>If true, all connected players must be authenticated with Xbox Live.
+                <td>If true then all connected players must be authenticated to Xbox Live.
                     Clients connecting to remote (non-LAN) servers will always require Xbox Live authentication regardless of this setting.
-                    If the server accepts connections from the Internet, then it is <b>highly</b> recommended to enable online-mode.</td>
+                    If the server accepts connections from the Internet, then it's <b>highly</b> recommended to enable online-mode.</td>
             </tr>
             <tr>
                 <td>allow-list</td>
@@ -194,18 +185,25 @@
                 <td>false</td>
                 <td>Always</td>
                 <td>If true then all connected players must be listed in the separate <code>allowlist.json</code> file.
-                    See the <i>Allowlist</i> section.</td>
+                            See the <i>Allowlist</i> section.</td>
+            </tr>
+            <tr>
+                <td>allow-cheats</td>
+                <td>true, false</td>
+                <td>false</td>
+                <td>Always</td>
+                <td></td>
             </tr>
             <tr>
                 <td>view-distance</td>
-                <td>Any integer greater than 5</td>
-                <td>32</td>
+                <td>Any integer</td>
+                <td>10</td>
                 <td>Always</td>
                 <td>The maximum allowed view distance. <b>Higher values have performance impact.</b></td>
             </tr>
             <tr>
                 <td>player-idle-timeout</td>
-                <td>Any positive integer, including 0</td>
+                <td>Any integer</td>
                 <td>30</td>
                 <td>Always</td>
                 <td>After a player has idled for this many minutes they will be kicked. If set to 0 then players can idle indefinitely.</td>
@@ -215,7 +213,7 @@
                 <td>Any integer</td>
                 <td>8</td>
                 <td>Always</td>
-                <td>Maximum number of threads the server will try to use. If set to 0 or removed then it will use as many as possible.</td>
+                <td>Maximum number of threads the server will try to use.</td>
             </tr>
             <tr>
                 <td>tick-distance</td>
@@ -253,22 +251,13 @@
                 <td>Determines the smallest size of raw network payload to compress. Can be used to experiment with CPU-bandwidth tradeoffs.</td>
             </tr>
             <tr>
-                <td>compression-algorithm</td>
-                <td>zlib, snappy</td>
-                <td>zlib</td>
-                <td>Always</td>
-                <td>Determines the compression algorithm to use for networking.</td>
-            </tr>
-            <tr>
                 <td>server-authoritative-movement</td>
-                <td>client-auth, server-auth, server-auth-with-rewind</td>
+                <td>true, false</td>
                 <td>true</td>
                 <td>Always</td>
-                <td>Enables server authoritative movement. If "server-auth", the server will replay local user input on
-					the server and send down corrections when the client's position doesn't match the server's. If
-					"server-auth-with-rewind" is enabled and the server sends a correction, the clients will be instructed to rewind time
-					back to the correction time, apply the correction, then replay all the player's inputs since then. This results in
-					smoother and more frequent corrections. Corrections will only happen if correct-player-movement is set to true.</td>
+                <td>Enables server authoritative movement. If true, the server will replay local user input on
+                    the server and send down corrections when the client's position doesn't match the server's.
+                    Corrections will only happen if correct-player-movement is set to true.</td>
             </tr>
             <tr>
                 <td>player-movement-score-threshold</td>
@@ -278,10 +267,10 @@
                 <td>The number of incongruent time intervals needed before abnormal behavior is reported.
                     In other words, how many times a player does something suspicious before we take action.
                     Only relevant for server-authoritative-movement.</td>
-            </tr>
+            </tr>            
             <tr>
                 <td>player-movement-action-direction-threshold</td>
-                <td>Any positive float in the range of [-1.00, 1.00]</td>
+                <td>Any positive float in the range of [-1, 1]</td>
                 <td>0.85</td>
                 <td>Always</td>
                 <td>The amount that the direction the player is attacking can differ from the direction the
@@ -296,7 +285,7 @@
                 <td>Always</td>
                 <td>The difference between server and client positions that needs to be exceeded before abnormal behavior is registered.
                     Only relevant for server-authoritative-movement.</td>
-            </tr>
+            </tr>            
             <tr>
                 <td>player-movement-duration-threshold-in-ms</td>
                 <td>Any positive integer</td>
@@ -305,7 +294,7 @@
                 <td>The duration of time the server and client positions can be out of sync (as defined by player-movement-distance-threshold)
                     before the abnormal movement score is incremented. This value is defined in milliseconds.
                     Only relevant for server-authoritative-movement.</td>
-            </tr>
+            </tr>         
             <tr>
                 <td>correct-player-movement</td>
                 <td>true, false</td>
@@ -316,68 +305,13 @@
                     We don't recommend enabling this as of yet; work is still in progress.</td>
             </tr>
             <tr>
-                <td>server-authoritative-block-breaking</td>
-                <td>true, false</td>
-                <td>false</td>
-                <td>Always</td>
-                <td>If true, the server will compute block mining operations in sync with the client so it can verify that the client should be able to break blocks when it thinks it can.
-					This setting cannot be combined with client authoritative movement and will be disabled if that setting is enabled.</td>
-            </tr>
-            <tr>
-                <td>chat-restriction</td>
-                <td>None, Dropped, Disabled</td>
-                <td>None</td>
-                <td>Always</td>
-                <td>This represents the level of restriction applied to the chat for each player that joins the server.
-					"None" is the default and represents regular free chat.
-					"Dropped" means the chat messages are dropped and never sent to any client. Players receive a message to let them know the feature is disabled.
-					"Disabled" means that unless the player is an operator, the chat UI does not even appear. No information is displayed to the player.
-				</td>
-            </tr>
-            <tr>
                 <td>disable-player-interaction</td>
                 <td>true, false</td>
                 <td>false</td>
                 <td>Always</td>
                 <td>If true, the server will inform clients that they should ignore other players when interacting with the world.
-					This is not server authoritative.</td>
-            </tr>
-                <td>client-side-chunk-generation-enabled</td>
-                <td>true, false</td>
-                <td>true</td>
-                <td>Always</td>
-                <td>If true, the server will inform clients that they have the ability to generate visual level chunks outside of player interaction distances.</td>
-            </tr>
-            <tr>
-                <td>block-network-ids-are-hashes</td>
-                <td>true, false</td>
-                <td>true</td>
-                <td>Always</td>
-                <td>If true, the server will send hashed block network ID's instead of id's that start from 0 and go up.  These id's are stable and won't change regardless of other block changes.</td>
-            </tr>
-            <tr>
-                <td>disable-persona</td>
-                <td>true, false</td>
-                <td>false</td>
-                <td>Internal Use Only</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>disable-custom-skins</td>
-                <td>true, false</td>
-                <td>false</td>
-                <td>Always</td>
-                <td>If true, disable players customized skins that were customized outside of the Minecraft store assets or in game assets.  This is used to disable possibly offensive custom skins players make.</td>
-            </tr>
-                <td>server-build-radius-ratio</td>
-                <td>Disabled, 0.0-1.0</td>
-                <td>Disabled</td>
-                <td>Always</td>
-                <td>If "Disabled" the server will dynamically calculate how much of the player's view it will generate, assigning the rest to the client to build.
-					Otherwise from the overridden ratio tell the server how much of the player's view to generate, disregarding client hardware capability.
-					<b>Only valid if client-side-chunk-generation-enabled is enabled.</b>
-				</td>
-            </tr>
+		    This is not server authoritative.</td>
+            </tr>      
         </tbody>
     </table>
 
@@ -473,7 +407,7 @@
     <h2>Permissions</h2>
     <p>
         You can adjust player specific permissions by assigning them roles in the <code>permissions.json</code> that is placed in the same directory as the server executable. The file contains a simple JSON object with XUIDs and permissions. Valid permissions are: <code>operator</code>, <code>member</code>, <code>visitor</code>. Every player that connects with these accounts will be treated according to the set premission. If you change this file while the server is running, then run the command <code>permission reload</code> to make sure that the server knows about your new change. You could also list the current permissions with <code>permission list</code>. Note that <code>online-mode</code> needs to be enabled for this feature to work since xuid requires online verification of the user account. If a new player that is not in this list connects, the <code>default-player-permission-level</code> option will apply.
-
+		
     </p>
     <p>
         Example <code>permissions.json</code> file:
@@ -504,7 +438,7 @@
     <p>
         You can issue commands to the server by typing in the console. The following commands are available. &lt; &gt; means a parameter is required, [ ] means it's optional and | denotes different allowed values. Strings can be enclosed in double quotes, ", if they contain spaces.
     </p>
-
+    
     <table>
         <thead>
             <tr>
