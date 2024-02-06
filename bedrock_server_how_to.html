@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <style type="text/css">
     body {
-        max-width: 700px;
+        max-width: 1500px;
         font-family: Arial;
     }
 
@@ -85,7 +85,7 @@
         <thead>
             <tr>
                 <th>Option name</th>
-                <th>Possible values</th>
+                <th style="min-width:200px">Possible values</th>
                 <th>Default value</th>
                 <th>When is it used</th>
                 <th>Notes</th>
@@ -128,7 +128,7 @@
                 <td>Always</td>
                 <td></td>
             </tr>
-			<tr>
+            <tr>
                 <td>allow-cheats</td>
                 <td>true, false</td>
                 <td>false</td>
@@ -162,8 +162,8 @@
                 <td>true</td>
                 <td>Always</td>
                 <td>Listen and respond to clients that are looking for servers on the LAN. This will cause the server to bind to
-					the default ports (19132, 19133) even when 'server-port' and 'server-portv6' have non-default values. Consider
-					turning this off if LAN discovery is not desirable, or when running multiple servers on the same host may lead to port conflicts.</td>
+                    the default ports (19132, 19133) even when 'server-port' and 'server-portv6' have non-default values. Consider
+                    turning this off if LAN discovery is not desirable, or when running multiple servers on the same host may lead to port conflicts.</td>
             </tr>
             <tr>
                 <td>level-name</td>
@@ -261,23 +261,24 @@
             </tr>
             <tr>
                 <td>server-authoritative-movement</td>
-                <td>client-auth, server-auth, server-auth-with-rewind</td>
-                <td>true</td>
+                <td>client-auth,<br>server-auth,<br>server-auth-with-rewind</td>
+                <td>server-auth</td>
                 <td>Always</td>
-                <td>Enables server authoritative movement. If "server-auth", the server will replay local user input on
-					the server and send down corrections when the client's position doesn't match the server's. If
-					"server-auth-with-rewind" is enabled and the server sends a correction, the clients will be instructed to rewind time
-					back to the correction time, apply the correction, then replay all the player's inputs since then. This results in
-					smoother and more frequent corrections. Corrections will only happen if correct-player-movement is set to true.</td>
+                <td>Changes the server authority on movement:<br>
+                    <b>"client-auth"</b>: Server has no authority and accepts all positions from the client.<br>
+                    <b>"server-auth"</b>: Server takes user input and simulates the Player movement but accepts the Client version if there is disagreement.<br>
+                    <b>"server-auth-with-rewind"</b>: The server will replay local user input and will push it to the Client so it can correct the position if it does not match.
+                    The clients will rewind time back to the correction time, apply the correction, then replay all the player's inputs since then.
+                    This results in smoother and more frequent corrections.</td>
             </tr>
             <tr>
-                <td>player-movement-score-threshold</td>
-                <td>Any positive integer</td>
-                <td>20</td>
-                <td>Always</td>
-                <td>The number of incongruent time intervals needed before abnormal behavior is reported.
-                    In other words, how many times a player does something suspicious before we take action.
-                    Only relevant for server-authoritative-movement.</td>
+                <td>player-position-acceptance-threshold</td>
+                <td>Any positive float</td>
+                <td>0.5</td>
+                <td>With "server-auth-with-rewind"</td>
+                <td>Only used with "server-auth-with-rewind". This is the tolerance of discrepancies between the Client and Server Player position.
+                This helps in problematic scenarios. The higher the number, the more tolerant the server will be before asking for a correction.
+                Passed value of 1.0, the chance of missing cheating increases.</td>
             </tr>
             <tr>
                 <td>player-movement-action-direction-threshold</td>
@@ -290,38 +291,19 @@
                     means any vector.</td>
             </tr>
             <tr>
-                <td>player-movement-distance-threshold</td>
-                <td>Any positive float</td>
-                <td>0.3</td>
-                <td>Always</td>
-                <td>The difference between server and client positions that needs to be exceeded before abnormal behavior is registered.
-                    Only relevant for server-authoritative-movement.</td>
-            </tr>
-            <tr>
-                <td>player-movement-duration-threshold-in-ms</td>
-                <td>Any positive integer</td>
-                <td>500</td>
-                <td>Always</td>
-                <td>The duration of time the server and client positions can be out of sync (as defined by player-movement-distance-threshold)
-                    before the abnormal movement score is incremented. This value is defined in milliseconds.
-                    Only relevant for server-authoritative-movement.</td>
-            </tr>
-            <tr>
-                <td>correct-player-movement</td>
-                <td>true, false</td>
-                <td>false</td>
-                <td>Always</td>
-                <td>If true, the client position will get corrected to the server position if the movement score exceeds the threshold.
-                    Only relevant for server-authoritative-movement.
-                    We don't recommend enabling this as of yet; work is still in progress.</td>
-            </tr>
-            <tr>
                 <td>server-authoritative-block-breaking</td>
                 <td>true, false</td>
                 <td>false</td>
-                <td>Always</td>
+                <td>Not when client-auth</td>
                 <td>If true, the server will compute block mining operations in sync with the client so it can verify that the client should be able to break blocks when it thinks it can.
-					This setting cannot be combined with client authoritative movement and will be disabled if that setting is enabled.</td>
+                    This setting cannot be combined with client authoritative movement and will be disabled if that setting is enabled.</td>
+            </tr>
+            <tr>
+                <td>server-authoritative-block-breaking-pick-range-scalar</td>
+                <td>Any float above 1.0</td>
+                <td>1.5</td>
+                <td>When server-authoritative-block-breaking is true</td>
+                <td>This increase the range of block breaking. This is squared and multiplied with the default range.</td>
             </tr>
             <tr>
                 <td>chat-restriction</td>
@@ -329,10 +311,10 @@
                 <td>None</td>
                 <td>Always</td>
                 <td>This represents the level of restriction applied to the chat for each player that joins the server.
-					"None" is the default and represents regular free chat.
-					"Dropped" means the chat messages are dropped and never sent to any client. Players receive a message to let them know the feature is disabled.
-					"Disabled" means that unless the player is an operator, the chat UI does not even appear. No information is displayed to the player.
-				</td>
+                    "None" is the default and represents regular free chat.
+                    "Dropped" means the chat messages are dropped and never sent to any client. Players receive a message to let them know the feature is disabled.
+                    "Disabled" means that unless the player is an operator, the chat UI does not even appear. No information is displayed to the player.
+                </td>
             </tr>
             <tr>
                 <td>disable-player-interaction</td>
@@ -340,7 +322,7 @@
                 <td>false</td>
                 <td>Always</td>
                 <td>If true, the server will inform clients that they should ignore other players when interacting with the world.
-					This is not server authoritative.</td>
+                    This is not server authoritative.</td>
             </tr>
                 <td>client-side-chunk-generation-enabled</td>
                 <td>true, false</td>
@@ -374,9 +356,9 @@
                 <td>Disabled</td>
                 <td>Always</td>
                 <td>If "Disabled" the server will dynamically calculate how much of the player's view it will generate, assigning the rest to the client to build.
-					Otherwise from the overridden ratio tell the server how much of the player's view to generate, disregarding client hardware capability.
-					<b>Only valid if client-side-chunk-generation-enabled is enabled.</b>
-				</td>
+                    Otherwise from the overridden ratio tell the server how much of the player's view to generate, disregarding client hardware capability.
+                    <b>Only valid if client-side-chunk-generation-enabled is enabled.</b>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -560,7 +542,7 @@
                     </p>
                 </td>
             </tr>
-			<tr>
+            <tr>
                 <td>op &lt;player&gt;</td>
                 <td>
                     <p>
@@ -568,7 +550,7 @@
                     </p>
                 </td>
             </tr>
-			<tr>
+            <tr>
                 <td>deop &lt;player&gt;</td>
                 <td>
                     <p>
