@@ -16,10 +16,14 @@ echo
 # Parse file name from user input
 ZIP_FILE_NAME=$(echo "$BEDROCK_ZIP_URL" | sed 's:.*/::')
 
+# Parse version from user input
+VERSION=$(echo "$BEDROCK_ZIP_URL" | sed 's:.*bedrock-server-::')
+VERSION=${VERSION::-4}
+
 # Confirm Upgrade y/n?
 echo "Got URL: $BEDROCK_ZIP_URL"
-echo "And file name: $ZIP_FILE_NAME"
-echo
+echo "File name: $ZIP_FILE_NAME"
+echo "Version: $VERSION"
 echo "WARNING: THIS IS A POTENTIALLY DESTRUCTIVE OPERATION!"
 while true; do
     read -p "Continue? (y/n)" yn
@@ -82,6 +86,12 @@ echo
 # Copy newly extracted files into repo
 echo "Copying extracted files to repo..."
 cp -a "$EXTRACTED_DIR/." "$BEDROCK_SERVER_DIR"
+echo "DONE!"
+echo
+
+# Create VERSION file
+echo "Updating VERSION file..."
+echo "$VERSION" > ./VERSION
 echo "DONE!"
 echo
 
