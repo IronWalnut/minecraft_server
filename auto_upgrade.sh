@@ -44,6 +44,12 @@ echo
 # Move to BEDROCK_SERVER_DIR
 cd $BEDROCK_SERVER_DIR
 
+# Create VERSION file
+echo "Updating VERSION file..."
+echo "$VERSION" > ./VERSION
+echo "DONE!"
+echo
+
 # Run GitHub Backup
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing changes..."
@@ -86,12 +92,6 @@ echo
 # Copy newly extracted files into repo
 echo "Copying extracted files to repo..."
 cp -a "$EXTRACTED_DIR/." "$BEDROCK_SERVER_DIR"
-echo "DONE!"
-echo
-
-# Create VERSION file
-echo "Updating VERSION file..."
-echo "$VERSION" > ./VERSION
 echo "DONE!"
 echo
 
