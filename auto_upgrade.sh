@@ -70,7 +70,7 @@ cd $AUTO_UPGRADE_TEMP_DIR
 
 # Download & Extract Zip
 echo "Downloading server zip..."
-#curl -o $ZIP_FILE_NAME $BEDROCK_ZIP_URL
+wget $BEDROCK_ZIP_URL
 unzip "$AUTO_UPGRADE_TEMP_DIR/$ZIP_FILE_NAME" -d "$EXTRACTED_DIR"
 echo
 
