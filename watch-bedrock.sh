@@ -2,7 +2,7 @@
 set -euo pipefail
 
 API_URL="https://net-secondary.web.minecraft-services.net/api/v1.0/download/links"
-LAST="/tmp/bedrock_last_ver"
+VERSION_FILE="/opt/minecraft_server/VERSION"
 UPDATE_SCRIPT="/opt/minecraft_server/auto_upgrade.sh"
 
 ########################################
@@ -29,38 +29,32 @@ fi
 ########################################
 # Extract Version from Filename
 ########################################
-LATEST=$(basename "$DOWNLOAD_URL")
+LATEST_FILE=$(basename "$DOWNLOAD_URL")
 
-if [[ ! "$LATEST" =~ bedrock-server-[0-9]+(\.[0-9]+){2,3}\.zip ]]; then
-    echo "$(date -Iseconds) - ERROR: Unexpected filename format: $LATEST" >&2
+if [[ ! "$LATEST_FILE" =~ bedrock-server-[0-9]+(\.[0-9]+){2,3}\.zip ]]; then
+    echo "$(date -Iseconds) - ERROR: Unexpected filename format: $LATEST_FILE" >&2
     exit 1
 fi
 
-########################################
-# Load Last-Known Version
-########################################
-if [ ! -f "$LAST" ]; then
-    echo "$LATEST" > "$LAST"
-    echo "$(date -Iseconds) - First run recorded version: $LATEST"
-    exit 0
-fi
-
-OLD=$(cat "$LAST")
+LATEST_VERSION="${LATEST_FILE#bedrock-server-}"
+LATEST_VERSION="${LATEST_VERSION%.zip}"
 
 ########################################
 # Compare Versions and Trigger Upgrade
 ########################################
-if [ "$LATEST" != "$OLD" ]; then
+CURRENT_VERSION=$(cat "$VERSION_FILE")
+
+if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
     echo "$(date -Iseconds) - New Bedrock version found!"
-    echo "Old: $OLD"
-    echo "New: $LATEST"
-    echo "$LATEST" > "$LAST"
+    echo "Current: $CURRENT_VERSION"
+    echo "New: $LATEST_VERSION"
 
     if [ -x "$UPDATE_SCRIPT" ]; then
+        echo "Triggering update..."
         "$UPDATE_SCRIPT" "$DOWNLOAD_URL" &
     else
         echo "WARNING: $UPDATE_SCRIPT is not executable"
     fi
 else
-    echo "$(date -Iseconds) - No change ($LATEST)"
+    echo "$(date -Iseconds) - No change ($LATEST_VERSION)"
 fi
