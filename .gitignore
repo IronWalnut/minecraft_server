@@ -1,0 +1,26 @@
+# Ignore server binaries
+bedrock_server
+bedrock_server_symbols.debug
+
+# Ignore server folders
+behavior_packs/*
+config/*
+definitions/*
+resource_packs/*
+structures/*
+
+# Ignore dynamically generated files
+valid_known_packs.json
+Dedicated_Server.txt
+
+# Ignore dynamically generated dirs
+development_behavior_packs/*
+development_resource_packs/*
+development_skin_packs/*
+minecraftpe/*
+premium_cache/*
+treatments/*
+world_templates/*
+
+# Ignore server logs
+server_console.log
