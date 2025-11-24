@@ -53,7 +53,7 @@ echo "Version: $VERSION"
 # Kill Server Processes
 ########################################
 echo "Killing server processes..."
-pkill -ef bedrock || true
+pkill -x bedrock_server || true
 echo "DONE!"
 echo
 
