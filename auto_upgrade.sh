@@ -144,4 +144,5 @@ echo "Upgrade complete!"
 ########################################
 # Restart Server
 ########################################
-/opt/minecraft_server/minecraft_bedrock.sh > /opt/minecraft_server/server_console.log &
+/opt/minecraft_server/minecraft_bedrock.sh > /opt/minecraft_server/server_console.log 2>&1 </dev/null &
+disown
