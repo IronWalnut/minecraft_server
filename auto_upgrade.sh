@@ -1,11 +1,11 @@
 #!/bin/bash
+set -euo pipefail
 
-# Set BEDROCK_SERVER_DIR to the directory the script is in
 BEDROCK_SERVER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Set temp dirs to download & extract new server files
-AUTO_UPGRADE_TEMP_DIR="/home/kwalton/Downloads/bedrock_auto_upgrade"
+AUTO_UPGRADE_TEMP_DIR=$(mktemp -d)
 EXTRACTED_DIR="$AUTO_UPGRADE_TEMP_DIR/extracted_server_files"
+trap 'rm -rf "$AUTO_UPGRADE_TEMP_DIR"' EXIT
 
 ########################################
 # Accept parameter OR prompt for URL
@@ -50,10 +50,10 @@ echo "File name: $ZIP_FILE_NAME"
 echo "Version: $VERSION"
 
 ########################################
-# Kill Server Processes
+# Stop Service
 ########################################
-echo "Killing server processes..."
-pkill -x bedrock_server || true
+echo "Stopping minecraft service..."
+systemctl stop minecraft
 echo "DONE!"
 echo
 
@@ -84,7 +84,6 @@ echo
 ########################################
 # Download & Extract New Bedrock Server
 ########################################
-mkdir "$AUTO_UPGRADE_TEMP_DIR"
 cd "$AUTO_UPGRADE_TEMP_DIR"
 
 echo "Downloading server zip..."
@@ -111,7 +110,7 @@ echo
 ########################################
 echo "Deleting untracked files from repo..."
 cd "$BEDROCK_SERVER_DIR"
-git clean -dfx
+git clean -df
 echo "DONE!"
 echo
 
@@ -120,14 +119,6 @@ echo
 ########################################
 echo "Copying extracted files to repo..."
 cp -a "$EXTRACTED_DIR/." "$BEDROCK_SERVER_DIR"
-echo "DONE!"
-echo
-
-########################################
-# Remove Temp Download Directory
-########################################
-echo "Removing temp dir..."
-rm -rf "$AUTO_UPGRADE_TEMP_DIR"
 echo "DONE!"
 echo
 
@@ -142,7 +133,6 @@ echo
 echo "Upgrade complete!"
 
 ########################################
-# Restart Server
+# Restart Service
 ########################################
-/opt/minecraft_server/minecraft_bedrock.sh > /opt/minecraft_server/server_console.log 2>&1 </dev/null &
-disown
+systemctl start minecraft

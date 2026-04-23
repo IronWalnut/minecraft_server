@@ -1,0 +1,10 @@
+[Unit]
+Description=Minecraft Bedrock update check
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/minecraft_server
+ExecStart=/opt/minecraft_server/watch_bedrock.sh
+StandardOutput=append:/opt/minecraft_server/watch_bedrock.log
+StandardError=append:/opt/minecraft_server/watch_bedrock.log

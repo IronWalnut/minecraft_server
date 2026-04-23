@@ -51,7 +51,7 @@ if [ "$LATEST_VERSION" != "$CURRENT_VERSION" ]; then
 
     if [ -x "$UPDATE_SCRIPT" ]; then
         echo "Triggering update..."
-        "$UPDATE_SCRIPT" "$DOWNLOAD_URL" &
+        "$UPDATE_SCRIPT" "$DOWNLOAD_URL"
     else
         echo "WARNING: $UPDATE_SCRIPT is not executable"
     fi
