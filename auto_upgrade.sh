@@ -53,7 +53,7 @@ echo "Version: $VERSION"
 # Stop Service
 ########################################
 echo "Stopping minecraft service..."
-systemctl stop minecraft || true
+systemctl --user stop minecraft || true
 echo "DONE!"
 echo
 
@@ -135,4 +135,4 @@ echo "Upgrade complete!"
 ########################################
 # Restart Service
 ########################################
-systemctl start minecraft
+systemctl --user start minecraft
