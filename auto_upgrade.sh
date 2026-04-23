@@ -126,7 +126,7 @@ echo
 # Tag in Git
 ########################################
 cd "$BEDROCK_SERVER_DIR"
-git tag "release/$VERSION"
+git tag "release/$VERSION" || true
 git push origin --tags
 
 echo
