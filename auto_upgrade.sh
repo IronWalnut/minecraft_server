@@ -135,4 +135,4 @@ echo "Upgrade complete!"
 ########################################
 # Restart Service
 ########################################
-systemctl --user start minecraft
+systemctl --user start minecraft --no-block
