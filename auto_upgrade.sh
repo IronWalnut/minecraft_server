@@ -53,7 +53,7 @@ echo "Version: $VERSION"
 # Stop Service
 ########################################
 echo "Stopping minecraft service..."
-systemctl stop minecraft
+systemctl stop minecraft || true
 echo "DONE!"
 echo
 
