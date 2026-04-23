@@ -1,0 +1,18 @@
+[Unit]
+Description=Minecraft Bedrock Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/minecraft_server
+ExecStartPre=/bin/sleep 30
+ExecStart=/opt/minecraft_server/minecraft_bedrock.sh
+Restart=on-failure
+RestartSec=10
+Environment=SSH_AUTH_SOCK=%t/ssh-agent.socket
+StandardOutput=file:/opt/minecraft_server/server_console.log
+StandardError=file:/opt/minecraft_server/server_console.log
+
+[Install]
+WantedBy=default.target
+
