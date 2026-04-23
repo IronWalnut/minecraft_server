@@ -1,9 +1,8 @@
 #!/bin/bash
-
 ##################################################################
-# Notes: This script is run as sudo by crontab on server reboot. #
-# It will push a backup the world, then start the server.        #
-# All directory references are relative to this script.          #
+# Notes: This script is run as a systemd service on reboot.     #
+# It will push a backup the world, then start the server.       #
+# All directory references are relative to this script.         #
 ##################################################################
 
 # Set working dir & LD_LIBRARY_PATH to directory the script is in
@@ -11,20 +10,9 @@ BEDROCK_SERVER_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && 
 LD_LIBRARY_PATH="$BEDROCK_SERVER_DIR"
 cd $BEDROCK_SERVER_DIR
 
-# Wait for networking stuff to come online after reboot
-echo "Waiting 30 seconds for network..."
-sleep 30
-echo "DONE!"
-echo
-
-# Set up SSH agent for Git
-eval "$(ssh-agent -s)"
-ssh-add /home/kwalton/.ssh/id_ed25519
-
 # Run Server GitHub Backup
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing Changes..."
-# Create commit on all files with timestamp as message
 git add -A && git commit -a -m "Auto-commit $CURRENT_TIME"
 echo "DONE!"
 echo
