@@ -5,6 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/minecraft_server
+ExecStartPre=/bin/truncate -s 0 /opt/minecraft_server/server_console.log
 ExecStartPre=/bin/sleep 30
 ExecStart=/opt/minecraft_server/minecraft_bedrock.sh
 Restart=on-failure
