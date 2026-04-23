@@ -17,6 +17,10 @@ sleep 30
 echo "DONE!"
 echo
 
+# Set up SSH agent for Git
+eval "$(ssh-agent -s)"
+ssh-add /home/kwalton/.ssh/id_ed25519
+
 # Run Server GitHub Backup
 CURRENT_TIME=$(date "+%Y.%m.%d-%H.%M.%S")
 echo "Committing Changes..."
