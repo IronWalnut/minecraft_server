@@ -10,16 +10,29 @@ The server will reboot for maintenance and to back up the world files on Mondays
 # Installation Notes
 The `minecraft_bedrock.sh` script includes logic to save changes and push to this repo when started and is designed to be run on server reboot. The `minecraft_bedrock` executable files are not included with this repo to save space and can be downloaded from [minecraft.net](https://www.minecraft.net/en-us/download/server/bedrock).
 
-### Command Line Example:
-```
-# Running with backup script logic
-/opt/minecraft_server/minecraft_bedrock.sh
+### systemd Services
 
-# Or just starting the server executable
-LD_LIBRARY_PATH=/opt/minecraft_server /opt/minecraft_server/bedrock_server
+The server is managed by two systemd services:
+
+- **`minecraft.service`** — starts `minecraft_bedrock.sh` on boot (after network), restarts on failure, logs to `server_console.log`
+- **`watch_bedrock.service`** / **`watch_bedrock.timer`** — checks for Bedrock server updates daily at 2am
+
+To install and enable:
+```
+# Copy service files to systemd
+sudo cp /opt/minecraft_server/minecraft.service /etc/systemd/system/
+sudo cp /opt/minecraft_server/watch_bedrock.service /etc/systemd/system/
+sudo cp /opt/minecraft_server/watch_bedrock.timer /etc/systemd/system/
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now minecraft.service
+sudo systemctl enable --now watch_bedrock.timer
 ```
 
-### Cronjob Example:
+Common management commands:
 ```
-@reboot /opt/minecraft_server/minecraft_bedrock.sh > /opt/minecraft_server/server_console.log
+sudo systemctl status minecraft        # check server status
+sudo systemctl restart minecraft       # restart the server
+sudo journalctl -u minecraft -f        # follow service logs
+sudo systemctl list-timers             # check timer schedule
 ```
