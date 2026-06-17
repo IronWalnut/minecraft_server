@@ -29605,3 +29605,20 @@ Upgrade complete!
 2026-06-13T02:00:02-04:00 - No change (1.26.23.1)
 2026-06-14T02:00:01-04:00 - No change (1.26.23.1)
 2026-06-15T02:00:01-04:00 - No change (1.26.23.1)
+2026-06-16T02:00:02-04:00 - No change (1.26.23.1)
+2026-06-17T02:00:02-04:00 - New Bedrock version found!
+Current: 1.26.23.1
+New: 1.26.30.5
+Triggering update...
+Using provided URL: https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.30.5.zip
+
+URL: https://www.minecraft.net/bedrockdedicatedserver/bin-linux/bedrock-server-1.26.30.5.zip
+File name: bedrock-server-1.26.30.5.zip
+Version: 1.26.30.5
+Stopping minecraft service...
+DONE!
+
+Updating VERSION file...
+DONE!
+
+Committing changes...
