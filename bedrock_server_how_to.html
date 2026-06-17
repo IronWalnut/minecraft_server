@@ -64,11 +64,6 @@
         </ul>
         Unzip the container file into an empty folder. Start the server by executing the <code>bedrock_server.exe</code> file.
     </p>
-    <p>
-        On some systems, when you wish to connect to the server using a client running on the same machine as the
-        server is running on, you will need to exempt the Minecraft client from UWP loopback restrictions:
-        <blockquote>CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436</blockquote>.
-    </p>
 
     <h2>Configuration</h2>
     <p>
@@ -150,14 +145,39 @@
                 <td>Integer between 1024 and 65535</td>
                 <td>19133</td>
                 <td>Always</td>
-                <td>Values below 1024 may be used, but are generally reserved for well known applications</td>
+                <td>Values below 1024 may be used, but are generally reserved for well known applications.
+                    This property is ignored when <code>transport=nethernet</code>; in that mode a single dual-stack socket is opened on <code>server-port</code> instead.</td>
+            </tr>
+            <tr>
+                <td>transport</td>
+                <td>raknet, nethernet</td>
+                <td>raknet</td>
+                <td>Always</td>
+                <td>Selects the network transport used to accept client connections. See the <i>Transport</i> section below for details on the differences between the two modes
+                    and for the additional options that apply when <code>transport=nethernet</code>.</td>
+            </tr>
+            <tr>
+                <td>server-ip</td>
+                <td>IPv4 or IPv6 literal, or empty</td>
+                <td>(empty)</td>
+                <td>When <code>transport=nethernet</code></td>
+                <td>The local address the server should bind its listening socket to. Leave empty to bind to all interfaces (the default).
+                    Ignored when <code>transport=raknet</code>.</td>
+            </tr>
+            <tr>
+                <td>server-udp-ports</td>
+                <td>See notes</td>
+                <td>(empty)</td>
+                <td>When <code>transport=nethernet</code></td>
+                <td>Configures the UDP ports used for client peer-to-peer transport when running on NetherNet. See the <i>UDP port configuration</i> section below.
+                    Ignored when <code>transport=raknet</code>.</td>
             </tr>
             <tr>
                 <td>enable-lan-visibility</td>
                 <td>true, false</td>
                 <td>true</td>
                 <td>Always</td>
-                <td>Listen and respond to clients that are looking for servers on the LAN. This will cause the server to bind to
+                <td>Listen and respond to clients that are looking for servers on the LAN. When <code>transport=raknet</code> this will cause the server to bind to
                     the default ports (19132, 19133) even when 'server-port' and 'server-portv6' have non-default values. Consider
                     turning this off if LAN discovery is not desirable, or when running multiple servers on the same host may lead to port conflicts.</td>
             </tr>
@@ -187,7 +207,7 @@
             <tr>
                 <td>allow-list</td>
                 <td>true, false</td>
-                <td>false</td>
+                <td>true</td>
                 <td>Always</td>
                 <td>If true then all connected players must be listed in the separate <code>allowlist.json</code> file.
                     See the <i>Allowlist</i> section.</td>
@@ -378,6 +398,104 @@
         </tbody>
     </table>
 
+    <h2>Transport</h2>
+    <p>
+        The <code>transport</code> property selects which network protocol the server uses to accept client connections.
+        Two values are supported:
+    </p>
+    <ul type="disc">
+        <li>
+            <b>raknet</b> (default) &mdash; The traditional Bedrock UDP transport. The server listens directly on
+            <code>server-port</code> (IPv4) and <code>server-portv6</code> (IPv6), and clients connect to that address
+            and port. This is the mode used by all previous releases.
+        </li>
+        <li>
+            <b>nethernet</b> &mdash; A WebRTC-based transport. The server listens on a single dual-stack TCP socket
+            on <code>server-port</code> for an HTTP-based signaling handshake, then negotiates a UDP connection with
+            each client that carries the gameplay traffic.
+            <p>
+                When <code>transport=nethernet</code>, the following additional properties apply:
+            </p>
+            <ul type="disc">
+                <li>
+                    <code>server-ip</code> &mdash; The local address to bind the listening socket to. Leave empty to
+                    bind to all interfaces. Accepts either an IPv4 or IPv6 literal. When empty, the server prefers a
+                    dual-stack IPv6 socket so that one listener serves both IPv4 and IPv6 clients, and falls back to
+                    IPv4-only if dual-stack is unavailable.
+                </li>
+                <li>
+                    <code>server-udp-ports</code> &mdash; Constrains the local UDP port range and optionally publishes
+                    an external NAT/port-forwarding mapping for clients. See the
+                    <i>UDP port configuration for NetherNet</i> section below.
+                </li>
+            </ul>
+            <p>
+                <b>Tip for servers open to the Internet:</b> Because the NetherNet handshake on
+                <code>server-port</code> speaks HTTP/TCP, it is recommended to put a reverse proxy (for example
+                nginx, HAProxy, or a managed edge service) in front of <code>server-port</code> to terminate
+                connections, enforce request and rate limits, and absorb abusive traffic before it ever reaches the
+                server. Only the signaling traffic on <code>server-port</code> needs to be forwarded through the
+                proxy &mdash; the gameplay traffic flows directly between the client and the server over the
+                negotiated UDP connection.
+            </p>
+        </li>
+    </ul>
+
+    <h3>UDP port configuration for NetherNet</h3>
+    <p>
+        By default, the NetherNet transport allocates UDP ports for client connections from the operating system's
+        ephemeral range, which is fine for most LAN and outbound-friendly deployments but is not always suitable for
+        servers that sit behind a firewall or NAT. <code>server-udp-ports</code> lets you pin the local port range
+        the server uses, and/or describe a port mapping that clients should connect to.
+    </p>
+    <p>
+        Each entry takes one of the following forms:
+    </p>
+    <ul type="disc">
+        <li>
+            <code>internal</code> or <code>start-end</code> &mdash; restricts the UDP port allocation window to the
+            given port or inclusive range. Use this to confine the server to a specific set of local ports (for
+            example, a firewall-opened range).
+        </li>
+        <li>
+            <code>[ip:]external[-external]:internal[-internal]</code> &mdash; publishes a NAT or port-forwarding
+            mapping that the server advertises to clients. Use this when the address or port the server binds locally
+            differs from the address or port clients must connect to (for example, when the server sits behind a 1:1
+            NAT or a router-level port-forwarding rule).
+            <ul type="disc">
+                <li>
+                    <code>internal</code> is the local UDP port the server actually binds to.
+                </li>
+                <li>
+                    <code>external</code> is the port clients reach from outside &mdash; the port the NAT or router
+                    translates to <code>internal</code>. The optional <code>ip:</code> prefix is the public address
+                    those clients see (IPv6 literals must be enclosed in square brackets); omit it to advertise the
+                    host's own addresses.
+                </li>
+                <li>
+                    Either side may be a single port or a <code>start-end</code> range. If both are ranges they must
+                    be the same length, and each external port is paired with the internal port at the same offset.
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <p>
+        Multiple entries can be supplied on a single line separated by commas, and the property may also appear on more
+        than one line to accumulate entries. Some examples:
+    </p>
+    <pre>
+# Restrict local UDP allocation to the specified range
+server-udp-ports=49152-49200
+
+# Bind locally to ports 32000-32100 and advertise them to clients as external ports 19132-19232
+server-udp-ports=19132-19232:32000-32100
+
+# Same, but advertised on a specific public IPv4 address
+server-udp-ports=203.0.113.10:19132-19232:32000-32100
+
+# Same, but advertised on a specific public IPv6 address
+server-udp-ports=[2001:db8::1]:19132-19232:32000-32100</pre>
+
     <h2>Folders</h2>
     <p>
         When unpacking you will see a few folders and the binary executable. When starting the server for the first time a bunch of new (empty) folders will be created. The folders you should care about are the following:
@@ -404,6 +522,14 @@
             <tr>
                 <td>worlds</td>
                 <td>This folder will be created at startup if it doesn't already exist. Every world created will have a folder named according to their <code>level-name</code> inside the <code>server.properties</code> file.</td>
+            </tr>
+            <tr>
+                <td>system_behavior_packs</td>
+                <td>This folder is not created automatically at server startup. It is used to store system administrator behavior packs that can be applied globally across all worlds. Additionally, the pack and it's module's <code>uuid</code> values are protected, and will result in other user packs failing to load if using the same ID.</td>
+            </tr>
+            <tr>
+                <td>system_resource_packs</td>
+                <td>This folder is not created automatically at server startup. It is used to store system administrator resource packs that can be applied globally across all worlds. Additionally, the pack and it's module's <code>uuid</code> values are protected, and will result in other user packs failing to load if using the same ID.</td>
             </tr>
         </tbody>
     </table>
