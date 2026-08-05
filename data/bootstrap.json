@@ -1,24 +1,18 @@
 {
   "profile": {
-    "default_verbosity": "none",
+    "default_verbosity": "default",
+
     "category_verbosity": {
-      "Default Group": "dev",
-      "Baseline": "default",
-      "Baseline (Creator)": "default",
-      "Chunk load system": "default",
-      "Chunk build system": "default",
-      "Chunk Render System": "default",
-      "World Generation system": "default",
-      "Overworld Generation system": "default",
-      "ResourceLoad": "default",
-      "Init Steps": "default",
-      "Main Loop": "default",
-      "DataDrivenModel": "default",
-      "Particles": "default",
-      "Particles (Creator)": "default",
-      "AnimationComponent": "default"
-    },
-    "min_group_stack_depth": 1,
-    "headers_enabled": true
+
+      "Example1": "default",
+      "Example2": "none",
+      "Example3": "retail",
+      "Example4": "retailplus",
+      "Example5": "dev",
+      "Example6": "verbose",
+      "Example7": "trace",
+
+      "Main Loop": "default"
+    }
   }
 }

@@ -11,12 +11,22 @@
       }
     },
     {
-      "minecraftPacketIds": [ 9 ],
+      "minecraftPacketIds": [ 9, 97 ],
       "algorithm": {
         "name": "BucketPacketLimitAlgorithm",
         "params": {
           "drainRatePerSec": 10,
           "maxBucketSize": 50
+        }
+      }
+    },
+    {
+      "minecraftPacketIds": [ 154 ],
+      "algorithm": {
+        "name": "BucketPacketLimitAlgorithm",
+        "params": {
+          "drainRatePerSec": 20,
+          "maxBucketSize": 60
         }
       }
     }
