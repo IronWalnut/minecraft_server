@@ -151,7 +151,7 @@
             <tr>
                 <td>transport</td>
                 <td>raknet, nethernet</td>
-                <td>raknet</td>
+                <td>nethernet</td>
                 <td>Always</td>
                 <td>Selects the network transport used to accept client connections. See the <i>Transport</i> section below for details on the differences between the two modes
                     and for the additional options that apply when <code>transport=nethernet</code>.</td>
@@ -405,12 +405,7 @@
     </p>
     <ul type="disc">
         <li>
-            <b>raknet</b> (default) &mdash; The traditional Bedrock UDP transport. The server listens directly on
-            <code>server-port</code> (IPv4) and <code>server-portv6</code> (IPv6), and clients connect to that address
-            and port. This is the mode used by all previous releases.
-        </li>
-        <li>
-            <b>nethernet</b> &mdash; A WebRTC-based transport. The server listens on a single dual-stack TCP socket
+            <b>nethernet</b> (default) &mdash; A WebRTC-based transport. The server listens on a single dual-stack TCP socket
             on <code>server-port</code> for an HTTP-based signaling handshake, then negotiates a UDP connection with
             each client that carries the gameplay traffic.
             <p>
@@ -438,6 +433,11 @@
                 proxy &mdash; the gameplay traffic flows directly between the client and the server over the
                 negotiated UDP connection.
             </p>
+        </li>
+        <li>
+            <b>raknet</b> &mdash; The traditional Bedrock UDP transport. The server listens directly on
+            <code>server-port</code> (IPv4) and <code>server-portv6</code> (IPv6), and clients connect to that address
+            and port. This is the mode used by releases prior to the NetherNet transport being made the default.
         </li>
     </ul>
 
@@ -533,6 +533,32 @@ server-udp-ports=[2001:db8::1]:19132-19232:32000-32100</pre>
             </tr>
         </tbody>
     </table>
+
+    <h2>Server Identity</h2>
+    <p>
+        The server identity key is used to identify the server to clients. If a saved key is available when the server starts,
+        it is loaded from <code>keys/server_identity_key.pem</code>, relative to the server working directory. If the file does
+        not exist, the server generates an identity key in memory. Generated keys are not saved automatically, this will
+        cause the server to have a different identity each time it is started, causing players to have to re-accept
+        server trust. 
+    </p>
+    <p>
+        To provide your own identity key, create the <code>keys</code> folder if necessary and place an unencrypted P-384
+        (<code>secp384r1</code>) private-key PEM file at <code>keys/server_identity_key.pem</code>. For example, with OpenSSL:
+    </p>
+    <pre>
+mkdir keys
+openssl ecparam -name secp384r1 -genkey -noout -out keys/server_identity_key.pem</pre>
+    <p>
+        The server validates the key when it starts. Do not encrypt the PEM with a passphrase, because the server must load it
+        without user interaction. Restart the server after adding or replacing the file.
+    </p>
+    <p>
+        Use <code>serveridentity status</code> to check whether a saved key is available,
+        <code>serveridentity save</code> to save the currently running key, and
+        <code>serveridentity delete</code> to remove the saved key. Deleting the saved key does not change the running
+        server identity; restart the server to start with a newly generated key.
+    </p>
 
     <h2>Allowlist</h2>
     <p>
@@ -716,6 +742,27 @@ server-udp-ports=[2001:db8::1]:19132-19232:32000-32100</pre>
             <tr>
                 <td>save &lt;hold | resume | query&gt;</td>
                 <td>Used to make atomic backups while the server is running. See the backup section for more information.</td>
+            </tr>
+            <tr>
+                <td>serveridentity &lt;save | delete | status&gt;</td>
+                <td>
+                    <p>
+                        Manages the saved server identity key at <code>keys/server_identity_key.pem</code>.
+                    </p>
+                    <p>
+                        <code>save</code> saves the currently running key.
+                    </p>
+                    <p>
+                        <code>delete</code> removes the saved key but does not change the running identity;
+                        restart the server to use a newly generated key.
+                    </p>
+                    <p>
+                        <code>status</code> reports whether a saved key is available.
+                    </p>
+                    <p>
+                        See the Server Identity section for instructions on providing your own PEM key.
+                    </p>
+                </td>
             </tr>
             <tr>
                 <td>allowlist &lt;on | off | list | reload&gt;</td>
