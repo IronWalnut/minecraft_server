@@ -167,7 +167,7 @@
             <tr>
                 <td>server-udp-ports</td>
                 <td>See notes</td>
-                <td>(empty)</td>
+                <td>19132</td>
                 <td>When <code>transport=nethernet</code></td>
                 <td>Configures the UDP ports used for client peer-to-peer transport when running on NetherNet. See the <i>UDP port configuration</i> section below.
                     Ignored when <code>transport=raknet</code>.</td>
@@ -249,6 +249,27 @@
                 <td>The world will be ticked this many chunks away from any player. <b>Higher values have performance impact.</b></td>
             </tr>
             <tr>
+                <td>persistent-ticking-area-max-count</td>
+                <td>A positive integer no greater than 2147483647, or unlimited</td>
+                <td>10</td>
+                <td>Always</td>
+                <td>The maximum number of persistent ticking areas allowed when adding a new area across all dimensions. Existing saved areas are not removed when this value is lowered. <b>Higher values and unlimited can affect server performance and memory use.</b> Unlimited removes this configured limit, but system resource and data representation limits still apply.</td>
+            </tr>
+            <tr>
+                <td>persistent-ticking-area-max-chunks</td>
+                <td>A positive integer no greater than 2147483647, or unlimited</td>
+                <td>100</td>
+                <td>Always</td>
+                <td>The maximum number of chunks allowed when adding a new persistent ticking area. Existing saved areas are not removed when this value is lowered. <b>Higher values and unlimited can affect server performance and memory use.</b> Unlimited removes this configured limit, but system resource and data representation limits still apply.</td>
+            </tr>
+            <tr>
+                <td>transient-ticking-area-max-chunks</td>
+                <td>A positive integer no greater than 2147483647, or unlimited</td>
+                <td>300</td>
+                <td>Always</td>
+                <td>The maximum aggregate number of unique chunks in transient ticking areas for each behavior pack. <b>Higher values and unlimited can affect server performance and memory use.</b> Unlimited removes this configured limit, but system resource and data representation limits still apply.</td>
+            </tr>
+            <tr>
                 <td>default-player-permission-level</td>
                 <td>visitor, member, operator</td>
                 <td>member</td>
@@ -305,6 +326,27 @@
                 <td>false</td>
                 <td>Always</td>
                 <td>If true, will be more strict toward the Entity interactions. This will impact Players interacting with each other in higher latency situations.</td>
+            </tr>
+            <tr>
+                <td>server-authoritative-entity-attack-request-validation</td>
+                <td>disabled, observe, enforce</td>
+                <td>disabled</td>
+                <td>Always</td>
+                <td>Controls validation that the attack request type matches the authoritative item behavior.</td>
+            </tr>
+            <tr>
+                <td>server-authoritative-entity-attack-range-validation</td>
+                <td>disabled, observe, enforce</td>
+                <td>disabled</td>
+                <td>Always</td>
+                <td>Controls server validation of targeted-actor attack range.</td>
+            </tr>
+            <tr>
+                <td>server-authoritative-entity-attack-range-tolerance</td>
+                <td>Any finite non-negative float</td>
+                <td>0.5</td>
+                <td>When entity attack range validation is observe or enforce</td>
+                <td>Additional block distance accepted beyond the normal targeted-actor gameplay range.</td>
             </tr>
             <tr>
                 <td>player-position-acceptance-threshold</td>
@@ -443,58 +485,92 @@
 
     <h3>UDP port configuration for NetherNet</h3>
     <p>
-        By default, the NetherNet transport allocates UDP ports for client connections from the operating system's
-        ephemeral range, which is fine for most LAN and outbound-friendly deployments but is not always suitable for
-        servers that sit behind a firewall or NAT. <code>server-udp-ports</code> lets you pin the local port range
-        the server uses, and/or describe a port mapping that clients should connect to.
+        <code>server-udp-ports</code> configures the UDP ports used for client connections when
+        <code>transport=nethernet</code>. If it is missing or empty, it defaults to allocating UDP
+        ports from the operating system's ephemeral range. This property is ignored when
+        <code>transport=raknet</code>.
     </p>
-    <p>
-        Each entry takes one of the following forms:
-    </p>
+    <h4>Connection modes</h4>
     <ul type="disc">
         <li>
-            <code>internal</code> or <code>start-end</code> &mdash; restricts the UDP port allocation window to the
-            given port or inclusive range. Use this to confine the server to a specific set of local ports (for
-            example, a firewall-opened range).
+            <b>Single shared UDP port:</b> all client connections share one UDP port.
         </li>
         <li>
-            <code>[ip:]external[-external]:internal[-internal]</code> &mdash; publishes a NAT or port-forwarding
-            mapping that the server advertises to clients. Use this when the address or port the server binds locally
-            differs from the address or port clients must connect to (for example, when the server sits behind a 1:1
-            NAT or a router-level port-forwarding rule).
-            <ul type="disc">
-                <li>
-                    <code>internal</code> is the local UDP port the server actually binds to.
-                </li>
-                <li>
-                    <code>external</code> is the port clients reach from outside &mdash; the port the NAT or router
-                    translates to <code>internal</code>. The optional <code>ip:</code> prefix is the public address
-                    those clients see (IPv6 literals must be enclosed in square brackets); omit it to advertise the
-                    host's own addresses.
-                </li>
-                <li>
-                    Either side may be a single port or a <code>start-end</code> range. If both are ranges they must
-                    be the same length, and each external port is paired with the internal port at the same offset.
-                </li>
-            </ul>
+            <b>UDP port range:</b> client connections are distributed across an inclusive range of ports.
+            When the range is exhausted, connections reuse ports within that range.
         </li>
     </ul>
+
+       <h4>Local and public ports</h4>
     <p>
-        Multiple entries can be supplied on a single line separated by commas, and the property may also appear on more
-        than one line to accumulate entries. Some examples:
+        Both modes support either the same local and public port values or a <code>public:local</code> mapping.
+        The <b>local</b> port is the port the server binds to. The <b>public</b> port is the port clients connect to
+        from outside the server's network. A colon separates the public and local values; it does not describe a range
+        between those two numbers.
+    </p>
+    <p>
+        For a mapped range, both sides of <code>:</code> must contain the same number of ports. Each public port maps
+        to the local port at the same position in its range. Port numbers must be integers from 1 to 65535.
+        Avoid mapping the same public port to different local ports.
+        Choose one of the following configurations; the examples are alternatives, not lines to combine.
+    </p>
+    <table>
+        <thead>
+            <tr>
+                <th>Mode</th>
+                <th>Configuration</th>
+                <th>Behavior</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Single shared port</td>
+                <td><code>server-udp-ports=19489</code></td>
+                <td>All clients share UDP port 19489. The local and public port values are the same.</td>
+            </tr>
+            <tr>
+                <td>Single shared port with a mapping</td>
+                <td><code>server-udp-ports=29489:19489</code></td>
+                <td>All clients share local UDP port 19489. Public UDP port 29489 must be forwarded to local port 19489.</td>
+            </tr>
+            <tr>
+                <td>Port range</td>
+                <td><code>server-udp-ports=19400-19500</code></td>
+                <td>Connections are distributed across UDP ports 19400-19500. The local and public ranges are the same.</td>
+            </tr>
+            <tr>
+                <td>Port range with a mapping</td>
+                <td><code>server-udp-ports=21200-21300:19400-19500</code></td>
+                <td>Connections use local UDP ports 19400-19500. Public UDP ports 21200-21300 must be forwarded to that local range.</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>Public address and port forwarding</h4>
+    <p>
+        To specify the public IP address clients should use, prefix a <code>public:local</code> mapping in
+        <code>server-udp-ports</code> with that address and a colon. Use <code>IP:public:local</code> for IPv4
+        or <code>[IPv6]:public:local</code> for IPv6. Both port values must be specified, even when they are
+        the same. Replace the example public IP addresses below with your server's public address.
+    </p>
+    <p>
+        For a single shared UDP port with a public IPv4 address:
     </p>
     <pre>
-# Restrict local UDP allocation to the specified range
-server-udp-ports=49152-49200
-
-# Bind locally to ports 32000-32100 and advertise them to clients as external ports 19132-19232
-server-udp-ports=19132-19232:32000-32100
-
-# Same, but advertised on a specific public IPv4 address
-server-udp-ports=203.0.113.10:19132-19232:32000-32100
-
-# Same, but advertised on a specific public IPv6 address
-server-udp-ports=[2001:db8::1]:19132-19232:32000-32100</pre>
+server-udp-ports=12.19.20.18:19489:19489</pre>
+    <p>
+        Clients send UDP traffic to <code>12.19.20.18:19489</code>, which must map to the server's local UDP
+        port 19489. The public and local port values are the same.
+    </p>
+    <p>
+        Enclose IPv6 addresses in square brackets to distinguish the address from the port configuration.
+        For a UDP port range with a public IPv6 address and a <code>public:local</code> mapping:
+    </p>
+    <pre>
+server-udp-ports=[2001:db8::2021:26:03]:21200-21300:19400-19500</pre>
+    <p>
+        Public UDP ports 21200-21300 at <code>[2001:db8::2021:26:03]</code> must map to the server's local UDP
+        ports 19400-19500, with each public port forwarded to the corresponding local port.
+    </p>
 
     <h2>Folders</h2>
     <p>
